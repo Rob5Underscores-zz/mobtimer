@@ -52,7 +52,7 @@ public class MobTimer {
         taskBuilder.execute(
                 () -> {
 
-                    if(Sponge.getServer().getDefaultWorld().get().getWorldTime() > 13000L && Sponge.getServer().getDefaultWorld().get().getWorldTime() > 23000L){
+                    if(Sponge.getServer().getDefaultWorld().get().getWorldTime() > 13000L && Sponge.getServer().getDefaultWorld().get().getWorldTime() > 23000L && Sponge.getServer().getTicksPerSecond() < 15){
                         if(isNight == false) {
                             isNight = true;
                             Sponge.getServer().getDefaultWorld().get().setGameRule("doMobSpawning", "true");
