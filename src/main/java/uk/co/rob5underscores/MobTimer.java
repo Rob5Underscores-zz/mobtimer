@@ -29,13 +29,15 @@ public class MobTimer {
     @Inject
     private Logger logger;
 
-    private static boolean isNight;
+    private boolean isNight;
+    private boolean isLagging;
 
     private static final Text prefix = Text.builder("[MobTimer] ").color(TextColors.GOLD).build();
 
     @Listener
     public void onServerStart(GameStartedServerEvent event) {
         isNight = false;
+        isLagging = false;
 
         if(!Sponge.getServer().getDefaultWorld().isPresent()) {
             //Disable plugin
@@ -52,9 +54,22 @@ public class MobTimer {
         taskBuilder.execute(
                 () -> {
 
-                    if(Sponge.getServer().getDefaultWorld().get().getWorldTime() > 13000L && Sponge.getServer().getDefaultWorld().get().getWorldTime() > 23000L && Sponge.getServer().getTicksPerSecond() < 15){
+                    if(Sponge.getServer().getTicksPerSecond() < 12) {
+                        if(!isLagging) {
+                            isLagging = true;
+                            Sponge.getServer().getDefaultWorld().get().setGameRule("doMobSpawning", "false");
+                            Sponge.getServer().getDefaultWorld().get().setGameRule("doMobSpawning", "true");
+                            Text text = Text.builder("Mob Spawning has been disabled due to low TPS!").color(TextColors.DARK_RED).build().concat(Text.NEW_LINE).concat(Text.builder("Please click to see why this is necessary!").color(TextColors.GRAY).onClick(TextActions.runCommand("/explainmt")).build());
+                            for(Player player : Sponge.getServer().getOnlinePlayers()) {
+                                player.sendMessage(prefix.concat(text));
+                            }
+                        }
+                    }
+
+                    if(Sponge.getServer().getDefaultWorld().get().getWorldTime() > 13000L && Sponge.getServer().getDefaultWorld().get().getWorldTime() > 23000L){
                         if(isNight == false) {
                             isNight = true;
+                            isLagging = false;
                             Sponge.getServer().getDefaultWorld().get().setGameRule("doMobSpawning", "true");
                             Text text = Text.builder("Night time has begun! Mob Spawning is enabled!").color(TextColors.DARK_RED).build().concat(Text.NEW_LINE).concat(Text.builder("Please click to see why this is necessary!").color(TextColors.GRAY).onClick(TextActions.runCommand("/explainmt")).build());
                             for(Player player : Sponge.getServer().getOnlinePlayers()) {
