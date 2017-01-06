@@ -66,7 +66,7 @@ public class MobTimer {
                         }
                     }
 
-                    if(Sponge.getServer().getDefaultWorld().get().getWorldTime() > 13000L && Sponge.getServer().getDefaultWorld().get().getWorldTime() > 23000L){
+                    if(Sponge.getServer().getDefaultWorld().get().getWorldTime() > 13000L && Sponge.getServer().getDefaultWorld().get().getWorldTime() < 23000L){
                         if(isNight == false) {
                             isNight = true;
                             isLagging = false;
